@@ -1,11 +1,15 @@
 import requests
 import torch
 from PIL import Image
-from transformers import MllamaForConditionalGeneration, AutoProcessor
+from transformers import AutoModelForCausalLM, AutoProcessor
+from huggingface_hub import login
 
-model_id = "meta-llama/Llama-3.2-11B-Vision-Instruct"
+# You'll need to set your HF token as an environment variable
+login()
 
-model = MllamaForConditionalGeneration.from_pretrained(
+model_id = "microsoft/git-base"
+
+model = AutoModelForCausalLM.from_pretrained(
     model_id,
     torch_dtype=torch.float32,
     device_map="cpu"
