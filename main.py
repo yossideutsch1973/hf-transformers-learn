@@ -29,12 +29,6 @@ inputs = processor(
     text=prompt,
     return_tensors="pt"
 ).to(model.device)
-inputs = processor(
-    image,
-    input_text,
-    add_special_tokens=False,
-    return_tensors="pt"
-).to(model.device)
 
 output = model.generate(**inputs, max_new_tokens=30)
 print(processor.decode(output[0]))
