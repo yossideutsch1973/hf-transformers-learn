@@ -1,11 +1,15 @@
+import os
 import requests
 import torch
 from PIL import Image
 from transformers import AutoModelForCausalLM, AutoProcessor
 from huggingface_hub import login
 
-# You'll need to set your HF token as an environment variable
-login()
+# Get token from environment variable
+token = os.getenv('HF_TOKEN')
+if not token:
+    raise ValueError("Please set the HF_TOKEN environment variable")
+login(token=token)
 
 model_id = "microsoft/git-base"
 
