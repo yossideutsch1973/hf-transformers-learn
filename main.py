@@ -11,9 +11,9 @@ if not token:
     raise ValueError("Please set the HF_TOKEN environment variable")
 login(token=token)
 
-# Initialize the pipeline with Llama 3.2
+# Initialize the pipeline with OPT model
 pipe = pipeline("text-generation", 
-    model="meta-llama/Llama-3.2-1B",
+    model="facebook/opt-350m",
     torch_dtype=torch.float16,
     device_map="auto"
 )
