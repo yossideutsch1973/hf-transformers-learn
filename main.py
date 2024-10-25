@@ -21,33 +21,48 @@ pipe = pipeline("text-generation",
 
 try:
     # Detailed prompt about sensor design
-    prompt = """You are a professional electronics engineer specializing in sensor design. 
-    Describe how to build a high-quality temperature and humidity sensor system at home.
-    
-    Structure your response exactly like this:
+    prompt = """You are a professional electronics engineer. Create a detailed guide for building a temperature and humidity sensor system at home.
+
+    Your response MUST follow this EXACT format:
+
     SENSOR TYPE:
-    - Digital temperature and humidity sensor
-    - Measurement range and capabilities
-    
+    • Specify exact sensor model (e.g. DHT22, BME280, etc.)
+    • List full measurement ranges for temp/humidity
+    • State key features (digital/analog, accuracy class)
+
     COMPONENTS NEEDED:
-    - List each component with approximate cost
-    - Include any required tools
-    
+    • Full parts list with exact model numbers
+    • Estimated cost per component in USD
+    • Required tools and equipment
+    • Any optional components for enhancements
+
     ASSEMBLY STEPS:
-    1. Detailed step-by-step instructions
-    2. Include wiring diagram description
-    3. Basic programming requirements
-    
-    PERFORMANCE SPECS:
-    - Temperature accuracy
-    - Humidity accuracy
-    - Response time
-    
-    APPLICATIONS:
-    - List practical uses
-    - Potential projects
-    
-    Provide specific details and keep it practical for a home builder:"""
+    1. Detailed wiring instructions (pin-by-pin)
+    2. Power supply requirements
+    3. Microcontroller setup (if needed)
+    4. Code examples in Python/Arduino
+    5. Common wiring mistakes to avoid
+
+    PERFORMANCE SPECIFICATIONS:
+    • Temperature accuracy (±°C)
+    • Humidity accuracy (±%RH) 
+    • Response time (seconds)
+    • Operating voltage range
+    • Power consumption
+    • Expected lifetime
+
+    PRACTICAL APPLICATIONS:
+    • Home automation examples
+    • Weather monitoring
+    • Industrial use cases
+    • Integration ideas
+
+    TROUBLESHOOTING:
+    • Common issues and solutions
+    • Calibration procedure
+    • Maintenance requirements
+
+    Use bullet points and numbering. Include specific part numbers and values. Keep it practical for DIY builders."""
     
     print("\nGenerating sensor design explanation...")
     
