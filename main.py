@@ -19,44 +19,38 @@ pipe = pipeline("text-generation",
 )
 
 try:
-    # Detailed prompt with structure
-    prompt = """Write a nature haiku following this exact structure:
-Line 1: 5 syllables about a rabbit
-Line 2: 7 syllables describing its action
-Line 3: 5 syllables with nature imagery
-
-Example:
-Soft rabbit hiding
-Beneath the garden flowers
-Morning dew sparkles
-
-Now write a new one:"""
+    # Detailed prompt about sensor design
+    prompt = """You are an expert in sensor design and electronics. 
+    Explain in detail the easiest professional-grade sensor that can be built at home.
+    Include:
+    1. Type of sensor and what it measures
+    2. Required components and approximate costs
+    3. Basic assembly steps
+    4. Expected accuracy/performance
+    5. Potential applications
     
-    print("\nGenerating haiku...")
+    Please provide a practical and detailed response:"""
+    
+    print("\nGenerating sensor design explanation...")
     
     # Generate text using the pipeline
     output = pipe(prompt, 
-        max_new_tokens=50,
-        num_beams=4,
-        temperature=0.7,
+        max_new_tokens=500,  # Increased for detailed explanation
+        num_beams=3,
+        temperature=0.8,
         do_sample=True,
-        top_k=50,
-        top_p=0.9,
-        no_repeat_ngram_size=3,
-        repetition_penalty=1.5
+        top_k=40,
+        top_p=0.95,
+        no_repeat_ngram_size=2,
+        repetition_penalty=1.2
     )
 
     # Extract and clean the generated text
-    generated_text = output[0]['generated_text'].split("Now write a new one:")[-1].strip()
+    generated_text = output[0]['generated_text'].split("Please provide a practical and detailed response:")[-1].strip()
     
     # Format output
-    print("\nGenerated Haiku:")
-    lines = [line.strip() for line in generated_text.split('\n') if line.strip()]
-    if len(lines) >= 3:
-        for line in lines[:3]:
-            print(line)
-    else:
-        print("Failed to generate complete haiku structure")
+    print("\nSensor Design Recommendation:")
+    print(generated_text)
 
 except Exception as e:
     print(f"\nError generating text: {str(e)}")
