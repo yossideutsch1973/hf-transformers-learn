@@ -1,2 +1,18 @@
 .aider*
 .env
+# Python virtual environment
+venv/
+
+# Python backup files
+*.py~
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# IDE settings
+.vscode/
+.idea/
