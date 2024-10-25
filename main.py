@@ -21,11 +21,50 @@ pipe = pipeline("text-generation",
 
 try:
     # Detailed prompt about sensor design
-    prompt = """You are a professional electronics engineer specializing in sensor systems. Create a detailed guide for building a temperature and humidity sensor system at home. Focus on the BME280 sensor as the primary component.
+    prompt = """You are a professional electronics engineer specializing in sensor systems. Create a detailed guide specifically for the BME280 temperature, humidity and pressure sensor.
 
-    IMPORTANT: Your response must EXACTLY follow the format below, with all sections clearly labeled and complete. Do not deviate from this structure or skip any sections.
+    IMPORTANT: Your response must EXACTLY follow this format with all sections. Any deviation will be rejected.
 
-    Your response MUST follow this EXACT format:
+    SENSOR TYPE:
+    • BME280 specifications
+    • Temperature range: -40°C to +85°C
+    • Humidity range: 0-100% RH
+    • Pressure range: 300-1100 hPa
+    • Key features: I2C/SPI digital interface, high accuracy
+
+    COMPONENTS NEEDED:
+    • BME280 sensor module ($10-15)
+    • Microcontroller (Arduino/ESP32) ($5-20) 
+    • Jumper wires ($2-5)
+    • Breadboard ($5)
+    • USB cable ($2-3)
+    • Optional: Display, case
+
+    ASSEMBLY STEPS:
+    1. Wire BME280 to microcontroller:
+       - VCC to 3.3V
+       - GND to GND
+       - SCL to SCL/Clock
+       - SDA to SDA/Data
+    2. Install required libraries
+    3. Upload example code
+    4. Test and verify readings
+
+    PERFORMANCE SPECIFICATIONS:
+    • Temperature accuracy: ±0.5°C
+    • Humidity accuracy: ±3% RH
+    • Pressure accuracy: ±1 hPa
+    • Response time: 1 second
+    • Operating voltage: 3.3V
+    • Current draw: 3.6μA at 1Hz sampling
+
+    PRACTICAL APPLICATIONS:
+    • Weather station monitoring
+    • Smart home climate control
+    • Indoor air quality tracking
+    • Industrial process monitoring
+    • Agricultural monitoring
+    • IoT environmental sensing
 
     SENSOR TYPE:
     • Specify exact sensor model (e.g. DHT22, BME280, etc.)
@@ -72,10 +111,10 @@ try:
     output = pipe(prompt,
         max_new_tokens=3000,
         num_beams=5,
-        temperature=0.2,  # Lower temperature for more deterministic output
-        do_sample=True,
-        top_k=20,  # Reduced for more focused output
-        top_p=0.6,  # Reduced for more focused output
+        temperature=0.1,  # Even lower for more deterministic output
+        do_sample=True, 
+        top_k=10,  # More restricted sampling
+        top_p=0.3,  # More focused output
         no_repeat_ngram_size=3,
         repetition_penalty=2.0,  # Increased to avoid repetition
         length_penalty=2.0  # Increased to encourage complete sections
