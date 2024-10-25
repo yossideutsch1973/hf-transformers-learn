@@ -11,9 +11,9 @@ if not token:
     raise ValueError("Please set the HF_TOKEN environment variable")
 login(token=token)
 
-# Initialize the pipeline with a more technical model
+# Initialize the pipeline with Llama 3.2 3B model
 pipe = pipeline("text-generation",
-    model="databricks/dolly-v2-3b",
+    model="meta-llama/Llama-2-3b-hf",
     torch_dtype=torch.float16,
     device_map="auto",
     trust_remote_code=True
