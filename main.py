@@ -11,7 +11,7 @@ if not token:
     raise ValueError("Please set the HF_TOKEN environment variable")
 login(token=token)
 
-model_id = "meta-llama/Llama-3.2-1b-chat-hf"
+model_id = "meta-llama/Llama-2-1b-chat-hf"
 
 # Load model with lower precision and better performance settings
 model = AutoModelForCausalLM.from_pretrained(
