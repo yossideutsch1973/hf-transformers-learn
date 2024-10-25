@@ -68,14 +68,14 @@ try:
     
     # Generate text using the pipeline
     output = pipe(prompt, 
-        max_new_tokens=800,  # Longer response for detailed instructions
+        max_new_tokens=2000,  # Increased for complete response
         num_beams=4,
-        temperature=0.7,
+        temperature=0.6,  # Reduced for more focused output
         do_sample=True,
         top_k=50,
-        top_p=0.92,
+        top_p=0.85,  # Reduced for more focused output
         no_repeat_ngram_size=3,
-        repetition_penalty=1.3
+        repetition_penalty=1.5  # Increased to avoid repetition
     )
 
     # Extract and clean the generated text
