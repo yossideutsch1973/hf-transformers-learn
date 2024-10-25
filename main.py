@@ -21,7 +21,9 @@ pipe = pipeline("text-generation",
 
 try:
     # Detailed prompt about sensor design
-    prompt = """You are a professional electronics engineer. Create a detailed guide for building a temperature and humidity sensor system at home.
+    prompt = """You are a professional electronics engineer specializing in sensor systems. Create a detailed guide for building a temperature and humidity sensor system at home. Focus on the BME280 sensor as the primary component.
+
+    IMPORTANT: Your response must EXACTLY follow the format below, with all sections clearly labeled and complete. Do not deviate from this structure or skip any sections.
 
     Your response MUST follow this EXACT format:
 
@@ -100,6 +102,31 @@ try:
     if missing_sections:
         print("\nWarning: Generated response is missing these sections:", ", ".join(missing_sections))
         
+    # Validate and format the output
+    if not all(section in generated_text for section in required_sections):
+        # If sections are missing, try to regenerate with a stronger format reminder
+        print("\nRetrying generation with stronger format requirements...")
+        generated_text = pipe(prompt + "\n\nNOTE: ALL sections listed above MUST be included in your response.",
+            max_new_tokens=3000,
+            temperature=0.2,  # Even lower temperature for more focused output
+            num_beams=5,
+            do_sample=True,
+            top_k=30,
+            top_p=0.7,
+            no_repeat_ngram_size=3,
+            repetition_penalty=2.0,
+            length_penalty=1.5
+        )[0]['generated_text']
+        
+        if "SENSOR TYPE:" in generated_text:
+            generated_text = generated_text[generated_text.index("SENSOR TYPE:"):]
+    
+    # Add reference links
+    generated_text += "\n\nUSEFUL REFERENCES:"
+    generated_text += "\nDatasheet: https://www.bosch-sensortec.com/media/bosch_sensortec/downloads/datasheets/bst-bme280-ds002.pdf"
+    generated_text += "\nTutorial: https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout"
+    generated_text += "\nSource Code: https://github.com/adafruit/Adafruit_BME280_Library"
+    
     # Format and print the output
     print("\nSensor Design Recommendation:")
     print(generated_text)
