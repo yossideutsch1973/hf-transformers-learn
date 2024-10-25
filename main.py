@@ -11,54 +11,32 @@ if not token:
     raise ValueError("Please set the HF_TOKEN environment variable")
 login(token=token)
 
-model_id = "microsoft/git-base"
+model_id = "meta-llama/Llama-2-1b-chat-hf"
 
+# Load model with lower precision and better performance settings
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
-    torch_dtype=torch.float32,
-    device_map="cpu"
+    torch_dtype=torch.float16,  # Use half precision
+    device_map="auto",  # Automatically choose best device
+    low_cpu_mem_usage=True
 )
-processor = AutoProcessor.from_pretrained(model_id)
 
-url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/0052a70beed5bf71b92610a43a52df6d286cd5f3/diffusers/rabbit.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
-
-prompt = "Write a nature haiku about this image:"
-inputs = processor(
-    images=image,
-    text=prompt,
-    return_tensors="pt",
-    add_special_tokens=True,
-    max_length=128,
-    padding=True,
-    truncation=True
-).to(model.device)
-
+# Simple test prompt
+prompt = "Write a short nature haiku in 3 lines (5-7-5 syllables) about a rabbit:"
+# Generate with optimized parameters
 output = model.generate(
-    **inputs,
-    max_new_tokens=30,
-    num_beams=10,
-    temperature=0.8,
-    no_repeat_ngram_size=3,
+    model.tokenizer(prompt, return_tensors="pt").input_ids.to(model.device),
+    max_new_tokens=50,
+    num_beams=4,
+    temperature=0.7,
     do_sample=True,
-    top_k=40,
-    top_p=0.95,
-    pad_token_id=processor.tokenizer.pad_token_id,
-    eos_token_id=processor.tokenizer.eos_token_id,
-    length_penalty=1.0,
-    repetition_penalty=1.2
+    top_p=0.9,
+    repetition_penalty=1.2,
+    early_stopping=True
 )
 
-# Clean up the generated text
-generated_text = processor.batch_decode(output, skip_special_tokens=True)[0]
+# Decode and clean up the generated text
+generated_text = model.tokenizer.decode(output[0], skip_special_tokens=True)
 generated_text = generated_text.replace(prompt, "").strip()
-
-# Remove HTML entities and special characters
-import re
-generated_text = re.sub(r'&[a-zA-Z]+;', '', generated_text)  # Remove HTML entities
-generated_text = re.sub(r'[<>]', '', generated_text)  # Remove < and >
-generated_text = re.sub(r'["\']', '', generated_text)  # Remove quotes
-generated_text = re.sub(r'[:;\(\)\-]', '', generated_text)  # Remove other punctuation
-generated_text = ' '.join(generated_text.split())  # Clean up whitespace
 print("\nGenerated Haiku:")
 print(generated_text)
