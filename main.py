@@ -11,38 +11,55 @@ if not token:
     raise ValueError("Please set the HF_TOKEN environment variable")
 login(token=token)
 
-# Initialize the pipeline with OPT model
-pipe = pipeline("text-generation", 
-    model="facebook/opt-350m",
+# Initialize the pipeline with a more technical model
+pipe = pipeline("text-generation",
+    model="databricks/dolly-v2-3b",
     torch_dtype=torch.float16,
     device_map="auto"
 )
 
 try:
     # Detailed prompt about sensor design
-    prompt = """You are an expert in sensor design and electronics. 
-    Explain in detail the easiest professional-grade sensor that can be built at home.
-    Include:
-    1. Type of sensor and what it measures
-    2. Required components and approximate costs
-    3. Basic assembly steps
-    4. Expected accuracy/performance
-    5. Potential applications
+    prompt = """You are a professional electronics engineer specializing in sensor design. 
+    Describe how to build a high-quality temperature and humidity sensor system at home.
     
-    Please provide a practical and detailed response:"""
+    Structure your response exactly like this:
+    SENSOR TYPE:
+    - Digital temperature and humidity sensor
+    - Measurement range and capabilities
+    
+    COMPONENTS NEEDED:
+    - List each component with approximate cost
+    - Include any required tools
+    
+    ASSEMBLY STEPS:
+    1. Detailed step-by-step instructions
+    2. Include wiring diagram description
+    3. Basic programming requirements
+    
+    PERFORMANCE SPECS:
+    - Temperature accuracy
+    - Humidity accuracy
+    - Response time
+    
+    APPLICATIONS:
+    - List practical uses
+    - Potential projects
+    
+    Provide specific details and keep it practical for a home builder:"""
     
     print("\nGenerating sensor design explanation...")
     
     # Generate text using the pipeline
     output = pipe(prompt, 
-        max_new_tokens=500,  # Increased for detailed explanation
-        num_beams=3,
-        temperature=0.8,
+        max_new_tokens=800,  # Longer response for detailed instructions
+        num_beams=4,
+        temperature=0.7,
         do_sample=True,
-        top_k=40,
-        top_p=0.95,
-        no_repeat_ngram_size=2,
-        repetition_penalty=1.2
+        top_k=50,
+        top_p=0.92,
+        no_repeat_ngram_size=3,
+        repetition_penalty=1.3
     )
 
     # Extract and clean the generated text
