@@ -66,22 +66,41 @@ try:
     
     print("\nGenerating sensor design explanation...")
     
-    # Generate text using the pipeline
-    output = pipe(prompt, 
-        max_new_tokens=2000,  # Increased for complete response
-        num_beams=4,
-        temperature=0.6,  # Reduced for more focused output
+    # Generate text using the pipeline with optimized parameters
+    output = pipe(prompt,
+        max_new_tokens=3000,  # Increased further for more detailed response
+        num_beams=5,
+        temperature=0.3,  # Reduced more for higher coherence
         do_sample=True,
-        top_k=50,
-        top_p=0.85,  # Reduced for more focused output
+        top_k=30,
+        top_p=0.7,  # Reduced for more focused output
         no_repeat_ngram_size=3,
-        repetition_penalty=1.5  # Increased to avoid repetition
+        repetition_penalty=1.8,  # Increased to avoid repetition
+        length_penalty=1.5  # Added to encourage longer, more detailed responses
     )
 
     # Extract and clean the generated text
-    generated_text = output[0]['generated_text'].split("Please provide a practical and detailed response:")[-1].strip()
+    generated_text = output[0]['generated_text']
     
-    # Format output
+    # Remove any prefix before the actual response
+    if "SENSOR TYPE:" in generated_text:
+        generated_text = generated_text[generated_text.index("SENSOR TYPE:"):]
+    
+    # Ensure all required sections are present
+    required_sections = [
+        "SENSOR TYPE:",
+        "COMPONENTS NEEDED:",
+        "ASSEMBLY STEPS:",
+        "PERFORMANCE SPECIFICATIONS:",
+        "PRACTICAL APPLICATIONS:",
+        "TROUBLESHOOTING:"
+    ]
+    
+    missing_sections = [section for section in required_sections if section not in generated_text]
+    if missing_sections:
+        print("\nWarning: Generated response is missing these sections:", ", ".join(missing_sections))
+        
+    # Format and print the output
     print("\nSensor Design Recommendation:")
     print(generated_text)
 
