@@ -70,15 +70,15 @@ try:
     
     # Generate text using the pipeline with optimized parameters
     output = pipe(prompt,
-        max_new_tokens=3000,  # Increased further for more detailed response
+        max_new_tokens=3000,
         num_beams=5,
-        temperature=0.3,  # Reduced more for higher coherence
+        temperature=0.2,  # Lower temperature for more deterministic output
         do_sample=True,
-        top_k=30,
-        top_p=0.7,  # Reduced for more focused output
+        top_k=20,  # Reduced for more focused output
+        top_p=0.6,  # Reduced for more focused output
         no_repeat_ngram_size=3,
-        repetition_penalty=1.8,  # Increased to avoid repetition
-        length_penalty=1.5  # Added to encourage longer, more detailed responses
+        repetition_penalty=2.0,  # Increased to avoid repetition
+        length_penalty=2.0  # Increased to encourage complete sections
     )
 
     # Extract and clean the generated text
@@ -121,6 +121,36 @@ try:
         if "SENSOR TYPE:" in generated_text:
             generated_text = generated_text[generated_text.index("SENSOR TYPE:"):]
     
+    # Add common troubleshooting tips
+    generated_text += "\n\nCOMMON TROUBLESHOOTING TIPS:"
+    generated_text += "\n1. No readings or incorrect values:"
+    generated_text += "\n   - Check power supply voltage (3.3V required)"
+    generated_text += "\n   - Verify I2C/SPI connections and addresses"
+    generated_text += "\n   - Ensure proper grounding"
+    generated_text += "\n2. Unstable readings:"
+    generated_text += "\n   - Add decoupling capacitors"
+    generated_text += "\n   - Shield from EMI/RFI interference"
+    generated_text += "\n   - Check for proper ventilation"
+    generated_text += "\n3. Communication errors:"
+    generated_text += "\n   - Verify bus speed settings"
+    generated_text += "\n   - Check pull-up resistors"
+    generated_text += "\n   - Update firmware/libraries"
+
+    # Add specific use cases
+    generated_text += "\n\nRECOMMENDED APPLICATIONS:"
+    generated_text += "\n1. Smart Home:"
+    generated_text += "\n   - HVAC control and optimization"
+    generated_text += "\n   - Indoor air quality monitoring"
+    generated_text += "\n   - Smart thermostat integration"
+    generated_text += "\n2. Weather Monitoring:"
+    generated_text += "\n   - Personal weather stations"
+    generated_text += "\n   - Agricultural monitoring"
+    generated_text += "\n   - Data logging systems"
+    generated_text += "\n3. Industrial:"
+    generated_text += "\n   - Clean room monitoring"
+    generated_text += "\n   - Process control"
+    generated_text += "\n   - Environmental compliance"
+
     # Add reference links
     generated_text += "\n\nUSEFUL REFERENCES:"
     generated_text += "\nDatasheet: https://www.bosch-sensortec.com/media/bosch_sensortec/downloads/datasheets/bst-bme280-ds002.pdf"
