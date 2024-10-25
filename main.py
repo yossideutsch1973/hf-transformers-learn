@@ -15,7 +15,8 @@ login(token=token)
 pipe = pipeline("text-generation",
     model="databricks/dolly-v2-3b",
     torch_dtype=torch.float16,
-    device_map="auto"
+    device_map="auto",
+    trust_remote_code=True
 )
 
 try:
