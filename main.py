@@ -23,7 +23,7 @@ processor = AutoProcessor.from_pretrained(model_id)
 url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/0052a70beed5bf71b92610a43a52df6d286cd5f3/diffusers/rabbit.jpg"
 image = Image.open(requests.get(url, stream=True).raw)
 
-prompt = "Create a haiku (3 lines: 5-7-5 syllables) describing this image:"
+prompt = "Write a nature haiku about this image:"
 inputs = processor(
     images=image,
     text=prompt,
@@ -52,16 +52,13 @@ output = model.generate(
 # Clean up the generated text
 generated_text = processor.batch_decode(output, skip_special_tokens=True)[0]
 generated_text = generated_text.replace(prompt, "").strip()
-# Remove HTML-like artifacts and clean up formatting
-generated_text = generated_text.replace("&amp;", "&")
-generated_text = generated_text.replace("&lt;", "<")
-generated_text = generated_text.replace("&gt;", ">")
-# Remove any HTML tags
-while "<" in generated_text and ">" in generated_text:
-    start = generated_text.find("<")
-    end = generated_text.find(">", start) + 1
-    generated_text = generated_text[:start] + generated_text[end:]
-# Clean up extra spaces and punctuation
-generated_text = ' '.join(word for word in generated_text.split() if word not in [':', '-', '(', ')', ';'])
+
+# Remove HTML entities and special characters
+import re
+generated_text = re.sub(r'&[a-zA-Z]+;', '', generated_text)  # Remove HTML entities
+generated_text = re.sub(r'[<>]', '', generated_text)  # Remove < and >
+generated_text = re.sub(r'["\']', '', generated_text)  # Remove quotes
+generated_text = re.sub(r'[:;\(\)\-]', '', generated_text)  # Remove other punctuation
+generated_text = ' '.join(generated_text.split())  # Clean up whitespace
 print("\nGenerated Haiku:")
 print(generated_text)
