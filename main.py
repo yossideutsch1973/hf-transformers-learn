@@ -52,7 +52,16 @@ output = model.generate(
 # Clean up the generated text
 generated_text = processor.batch_decode(output, skip_special_tokens=True)[0]
 generated_text = generated_text.replace(prompt, "").strip()
-# Remove any extra punctuation or artifacts
-generated_text = ' '.join(generated_text.split())
+# Remove HTML-like artifacts and clean up formatting
+generated_text = generated_text.replace("&amp;", "&")
+generated_text = generated_text.replace("&lt;", "<")
+generated_text = generated_text.replace("&gt;", ">")
+# Remove any HTML tags
+while "<" in generated_text and ">" in generated_text:
+    start = generated_text.find("<")
+    end = generated_text.find(">", start) + 1
+    generated_text = generated_text[:start] + generated_text[end:]
+# Clean up extra spaces and punctuation
+generated_text = ' '.join(word for word in generated_text.split() if word not in [':', '-', '(', ')', ';'])
 print("\nGenerated Haiku:")
 print(generated_text)
